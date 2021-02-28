@@ -8,12 +8,12 @@ import java.io.InputStreamReader;
 
 public class App {
 
-  static String[] allowedPayMethod = {"creditcard", "c", "paypal", "p"};
+  static String[] allowedPayMethod = {"creditcard", "c", "paypal", "p", "wire", "w"};
 
   public static void main(String[] args) throws IOException {
     final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     while (true) {
-      message(">>> 지불방법을 입력하세요[creditcard(c)|paypal(p)] (종료하려면 exit 를 입력하고 Enter):");
+      message(">>> 지불방법을 입력하세요[creditcard(c)|paypal(p)|wire(w)] (종료하려면 exit 를 입력하고 Enter):");
 
       final String payMethod = reader.readLine();
 
@@ -26,9 +26,10 @@ public class App {
         continue;
       }
 
-      PaymentController controller = new PaymentController();
+      final PaymentService paymentService = PaymentServiceFactory.create(payMethod);
+      final PaymentController controller = new PaymentController(paymentService);
       try {
-        String result = controller.pay(payMethod, 10_000L);
+        String result = controller.pay(10_000L);
         message(result);
       } catch (RuntimeException e) {
         error("결제 처리 오류: " + e.getMessage());
