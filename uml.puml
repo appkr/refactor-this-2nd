@@ -1,0 +1,24 @@
+@startuml
+
+class PaymentController {
+  + pay(payMethod:String, amount:long): String
+}
+
+class PaymentServiceFactory {
+  create(payMethod:String): PaymentService
+}
+
+interface PaymentService {
+  + pay(amount): String
+}
+
+class PaypalPaymentService implements PaymentService {}
+
+class CreditcardPaymentService implements PaymentService {}
+
+class WireTransferPaymentService implements PaymentService {}
+
+PaymentController -> PaymentServiceFactory
+PaymentController --> PaymentService
+
+@enduml
